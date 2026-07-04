@@ -11,7 +11,9 @@ Requirements: PHP with the `pdo_sqlite` extension (bundled with virtually all PH
 
 ## 1. Deploy the Logger
 
-Upload `logger.php` and `logger-config.php` to your low-cost host, in the same directory. That's the entire deployment - no build step, no install.
+Copy `logger-config.example.php` to `logger-config.php` and edit it (see the table below). `logger-config.php` is gitignored, since it may end up holding real deployment details - it's meant to be created locally, not committed.
+
+Upload `logger.php` and your `logger-config.php` to your low-cost host, in the same directory. That's the entire deployment - no build step, no install.
 
 Pick a **secret source name** for each webhook integration you want to test, e.g. `stripe-9f3ka2` (make it long/random - see [Security](#security) below).
 
@@ -42,7 +44,7 @@ There is no log retention/cleanup - the SQLite file grows until you delete it ma
 
 ## 2. Configure and run the Poller
 
-Edit `poller-config.php` **locally** (this file never gets deployed to the low-cost host - it only needs to reach your local dev server):
+Copy `poller-config.example.php` to `poller-config.php` and edit it **locally** (this file never gets deployed to the low-cost host - it only needs to reach your local dev server). Like `logger-config.php`, it's gitignored - it will contain your secret `source` names (see [Security](#security)), which should never be committed:
 
 ```php
 <?php

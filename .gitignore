@@ -1,0 +1,11 @@
+# Real config files — contain your actual secret source names / target
+# URLs. Copy the .example.php versions to these names and edit locally.
+/logger-config.php
+/poller-config.php
+
+# Runtime SQLite databases (may contain captured webhook payloads).
+/logger.sqlite
+/poller-tracking.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm

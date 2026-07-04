@@ -84,12 +84,22 @@ function forward_webhook(string $targetUrl, array $row): array
         // Accept-Encoding is dropped so the target's response comes back
         // uncompressed and readable for the debug log below; PHP's stream
         // wrapper doesn't auto-decompress gzip/br responses like curl does.
-        if (in_array($lower, ['transfer-encoding', 'content-length', 'accept-encoding'], true)) {
+        // Host is dropped because it must name the replay target, not the
+        // original recipient — local dev proxies (Herd, Valet, nginx
+        // name-based vhosts) route by Host header, so replaying the
+        // original one verbatim sends the request nowhere.
+        if (in_array($lower, ['transfer-encoding', 'content-length', 'accept-encoding', 'host'], true)) {
             continue;
         }
         $headerLines[] = $name . ': ' . $value;
     }
     $headerLines[] = 'Content-Length: ' . strlen($body);
+
+    $targetHost = parse_url($targetUrl, PHP_URL_HOST);
+    $targetPort = parse_url($targetUrl, PHP_URL_PORT);
+    if ($targetHost !== null && $targetHost !== false) {
+        $headerLines[] = 'Host: ' . $targetHost . ($targetPort !== null ? ':' . $targetPort : '');
+    }
 
     $method = $row['method'] ?? 'POST';
 
